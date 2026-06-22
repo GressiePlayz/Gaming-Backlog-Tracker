@@ -1,59 +1,74 @@
-# GamingBacklogTracker
+# Gaming Backlog Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.29.
+**Proiect Angular** — Smaranda Sergiu-Ionel & Pătrașcu Alexandru Cătălin
 
-## Development server
+## 1. Descrierea proiectului
 
-To start a local development server, run:
+Gaming Backlog Tracker este o aplicație web care permite utilizatorilor să își gestioneze
+lista personală de jocuri video — fie cele pe care le au în desfășurare, fie cele pe care
+și le propun să le termine (backlog). Aplicația ajută la urmărirea progresului, a orelor
+jucate și a platformei pe care este jucat fiecare titlu, oferind o privire centralizată
+asupra colecției de jocuri a utilizatorului.
 
-```bash
-ng serve
-```
+Ideea a apărut din nevoia reală a multor gameri de a ține evidența jocurilor cumpărate
+dar neterminate, a trofeelor/achievement-urilor de vânat și a progresului general prin
+biblioteca personală de jocuri.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 2. Funcționalități principale
 
-## Code scaffolding
+### Autentificare (Login + Register)
+- Formular de **login**: email, parolă, checkbox "Remember me" (păstrează userul logat
+  folosind local storage / token persistent).
+- Formular de **register**: email, parolă, confirmare parolă, nume, prenume.
+- Validare custom pentru parolă: minim 6 caractere, cu cel puțin o literă mare, o literă
+  mică, o cifră și un caracter special.
+- Conectare la [Reqres](https://reqres.in/) ca Fake API pentru autentificare.
+- Pagina de login este vizibilă doar utilizatorilor neautentificați; după logare, accesul
+  la ea este blocat printr-un route guard, iar utilizatorul e redirecționat către
+  dashboard.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Tabelul de jocuri (Backlog)
+Tabelul principal al aplicației conține următoarele coloane:
+1. **Titlu joc**
+2. **Platformă** (PC, PS5, Xbox)
+3. **Progres** (0–100%, prin slider/input numeric)
+4. **Ore jucate**
+5. **Status** (In Progress, Completed, Backlog)
 
-```bash
-ng generate component component-name
-```
+Funcționalități pe tabel:
+- **Adăugare** unui joc nou printr-un modal cu formular validat.
+- **Editare** unei intrări existente, tot printr-un modal.
+- **Ștergere** unei intrări, printr-un buton dedicat pe fiecare rând.
+- **Căutare** prin titlul jocului, folosind un searchbar.
+- **Sortare** după fiecare coloană (titlu, platformă, progres, ore, status).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Funcționalitate bonus
+La adăugarea unui joc cu status "Completed" sau progres 100%, aplicația declanșează un
+efect de confetti pe ecran, folosind librăria externă `canvas-confetti`.
 
-```bash
-ng generate --help
-```
+## 3. Arhitectură tehnică
 
-## Building
+- **Angular 20**, proiect organizat pe module **lazy-loaded** (ex: modulul de auth separat
+  de modulul de backlog/dashboard), încărcate la nevoie prin routing.
+- **NgZorro** ca librărie de UI pentru componente (tabel, modal, input, butoane, slider).
+- Folosirea de **componente** dedicate pentru fiecare bucată de UI reutilizabilă (ex:
+  componenta de rând din tabel, componenta de formular pentru adăugare/editare joc).
+- Comunicare între componente prin **`@Input()`** și **`@Output()`** (ex: componenta de
+  formular trimite jocul nou adăugat către componenta părinte prin output, iar componenta
+  de tabel primește lista de jocuri prin input).
+- Un **serviciu** (`GameService`) responsabil de gestionarea listei de jocuri (CRUD local,
+  eventual conectare la un backend real ca bonus).
+- Folosirea unui **signal** Angular pentru a gestiona starea reactivă a listei de
+  jocuri/filtrare/căutare.
+- Autentificare gestionată printr-un `AuthService`, cu interceptor/guard pentru protejarea
+  rutelor.
 
-To build the project run:
+## 4. Tehnologii folosite
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Tehnologie       | Scop                                  |
+|------------------|----------------------------------------|
+| Angular 20       | Framework principal                   |
+| NgZorro          | Librărie de componente UI             |
+| RxJS / Signals   | Gestionarea stării reactive           |
+| Reqres API       | Fake API pentru autentificare         |
+| canvas-confetti  | Efect vizual bonus (librărie externă) |
