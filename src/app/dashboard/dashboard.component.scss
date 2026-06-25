@@ -1,0 +1,131 @@
+.dashboard-container {
+  padding: 2rem;
+  background: #1e1e2f;
+  min-height: 100vh;
+  color: white;
+}
+
+.main-content {
+  background: #2a2a3d;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.table-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+
+  .search-input {
+    width: 300px;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: #1e1e2f;
+    color: white;
+    outline: none;
+
+    &:focus {
+      border-color: #4d7cfe;
+    }
+  }
+
+  .add-btn {
+    padding: 0.6rem 1.2rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #218838;
+    }
+  }
+}
+
+// Customizare Ant Design Table pentru Dark Theme
+::ng-deep {
+  .custom-table {
+    .ant-table {
+      background: #2a2a3d !important;
+      color: white !important;
+    }
+    .ant-table-thead > tr > th {
+      background: #1e1e2f !important;
+      color: #a0a0b0 !important;
+      border-bottom: 1px solid #3d3d5c !important;
+    }
+    .ant-table-tbody > tr > td {
+      border-bottom: 1px solid #3d3d5c !important;
+    }
+    .ant-table-tbody > tr:hover > td {
+      background: #34344d !important;
+    }
+  }
+  
+  // Stiluri Modal
+  .ant-modal-content {
+    background-color: #2a2a3d !important;
+    color: white !important;
+  }
+  .ant-modal-header {
+    background-color: #2a2a3d !important;
+    border-bottom: 1px solid #3d3d5c !important;
+    .ant-modal-title { color: white !important; }
+  }
+  .ant-modal-close { color: white !important; }
+  .ant-form-item-label > label { color: #ccc !important; }
+}
+
+.game-title {
+  font-weight: 600;
+  color: #fff;
+}
+
+.badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.platform-badge {
+  background: #444466;
+  color: #e0e0ff;
+}
+
+.status-badge {
+  &.backlog { background: #6c757d; color: white; }
+  &.in-progress { background: #007bff; color: white; }
+  &.completed { background: #28a745; color: white; }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    padding: 0.3rem 0.7rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+
+  .edit-action {
+    background: #ffc107;
+    color: #111;
+    &:hover { background: #e0a800; }
+  }
+
+  .delete-action {
+    background: #dc3545;
+    color: white;
+    &:hover { background: #bd2130; }
+  }
+}

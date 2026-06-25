@@ -41,3 +41,6 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Reqres API key - nu se commitează
+src/app/environment.ts

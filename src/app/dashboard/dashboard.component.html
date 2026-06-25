@@ -1,0 +1,152 @@
+<div class="dashboard-container">
+  <app-header [title]="dashboardTitle" (refreshData)="handleRefresh()"></app-header>
+
+  <div class="main-content">
+    <div class="table-actions">
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Caută după titlu sau platformă..." 
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)" 
+      />
+      <button class="add-btn" (click)="openAddModal()">+ Adaugă Joc</button>
+    </div>
+
+    <nz-table 
+      #basicTable 
+      [nzData]="filteredGames()" 
+      [nzFrontPagination]="true" 
+      class="custom-table"
+      nzNoResult="Nu există jocuri în listă."
+    >
+      <thead>
+        <tr>
+          <th nzShowSort [nzSortFn]="sortTitle">Titlu Joc</th>
+          <th nzShowSort [nzSortFn]="sortPlatform">Platformă</th>
+          <th nzShowSort [nzSortFn]="sortProgress">Progres</th>
+          <th nzShowSort [nzSortFn]="sortHours">Ore Jucate</th>
+          <th nzShowSort [nzSortFn]="sortStatus">Status</th>
+          <th>Acțiuni</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (data of basicTable.data; track data.id) {
+          <tr>
+            <td class="game-title">{{ data.title }}</td>
+            <td><span class="badge platform-badge">{{ data.platform }}</span></td>
+            <td>
+              <div class="progress-container">
+                <span class="progress-text">{{ data.progress }}%</span>
+              </div>
+            </td>
+            <td>{{ data.hours }} h</td>
+            <td>
+              <span class="badge status-badge" [ngClass]="{
+                'backlog': data.status === 'Backlog',
+                'in-progress': data.status === 'În Desfășurare',
+                'completed': data.status === 'Finalizat'
+              }">
+                {{ data.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="edit-action" (click)="openEditModal(data)">Editează</button>
+                <button class="delete-action" (click)="deleteGame(data.id)">Șterge</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<!-- Modal -->
+<nz-modal 
+  [nzVisible]="isModalVisible()" 
+  (nzVisibleChange)="isModalVisible.set($event)"
+  [nzTitle]="modalTitle()" 
+  (nzOnCancel)="handleCancel()" 
+  (nzOnOk)="handleSave()"
+  [nzOkDisabled]="gameForm.invalid"
+  nzOkText="Salvează"
+  nzCancelText="Anulează"
+>
+  <ng-container *nzModalContent>
+    <form [formGroup]="gameForm" nz-form nzLayout="vertical">
+      
+      <nz-form-item>
+        <nz-form-label nzRequired>Titlu Joc</nz-form-label>
+        <nz-form-control nzErrorTip="Titlul este obligatoriu!">
+          <input nz-input formControlName="title" placeholder="Ex: Elden Ring" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Platformă</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="platform">
+            <nz-option nzValue="PC" nzLabel="PC"></nz-option>
+            <nz-option nzValue="PlayStation 5" nzLabel="PlayStation 5"></nz-option>
+            <nz-option nzValue="PlayStation 4" nzLabel="PlayStation 4"></nz-option>
+            <nz-option nzValue="PlayStation 3" nzLabel="PlayStation 3"></nz-option>
+            <nz-option nzValue="Xbox Series" nzLabel="Xbox Series"></nz-option>
+            <nz-option nzValue="Xbox One" nzLabel="Xbox One"></nz-option>
+            <nz-option nzValue="Xbox 360" nzLabel="Xbox 360"></nz-option>
+            <nz-option nzValue="Switch" nzLabel="Switch"></nz-option>
+            <nz-option nzValue="Switch 2" nzLabel="Switch 2"></nz-option>
+            <nz-option nzValue="Wii U" nzLabel="Wii U"></nz-option>
+            <nz-option nzValue="Wii" nzLabel="Wii"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Progres (%)</nz-form-label>
+        <nz-form-control nzErrorTip="Valoarea trebuie să fie între 0 și 100">
+          <nz-input-number 
+            formControlName="progress" 
+            [nzMin]="0" 
+            [nzMax]="100" 
+            [nzStep]="1"
+            (ngModelChange)="onProgressChange($event)"
+            style="width: 100%"
+          ></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Ore Jucate</nz-form-label>
+        <nz-form-control nzErrorTip="Introduceți un număr valid de ore">
+          <nz-input-number formControlName="hours" [nzMin]="0" style="width: 100%"></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Status</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="status">
+            <nz-option 
+              nzValue="Backlog" 
+              nzLabel="Backlog"
+              [nzDisabled]="gameForm.get('progress')?.value === 100"
+            ></nz-option>
+            <nz-option 
+              nzValue="În Desfășurare" 
+              nzLabel="În Desfășurare"
+              [nzDisabled]="gameForm.get('progress')?.value === 100"
+            ></nz-option>
+            <nz-option 
+              nzValue="Finalizat" 
+              nzLabel="Finalizat"
+              [nzDisabled]="gameForm.get('progress')?.value < 100"
+            ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+    </form>
+  </ng-container>
+</nz-modal>

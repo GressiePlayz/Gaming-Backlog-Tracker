@@ -1,0 +1,36 @@
+<div class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h2>Login</h2>
+
+    @if (errorMessage()) {
+      <div class="error-message">{{ errorMessage() }}</div>
+    }
+
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+      @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+        <span class="error">Introduceți un email valid</span>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="password">Parolă</label>
+      <input id="password" type="password" formControlName="password" />
+      @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+        <span class="error">Parola este obligatorie</span>
+      }
+    </div>
+
+    <div class="form-field checkbox-field">
+      <input id="rememberMe" type="checkbox" formControlName="rememberMe" />
+      <label for="rememberMe">Ține-mă minte</label>
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid">Autentifică-te</button>
+
+    <p class="register-link">
+      Nu ai cont? <a routerLink="/register">Înregistrează-te</a>
+    </p>
+  </form>
+</div>
